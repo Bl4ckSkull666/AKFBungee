@@ -1,0 +1,62 @@
+debug: false
+check-every-x-second: 10
+bukkit-configs:
+  check:
+    inventory-click: true
+    inventory-close: true
+    inventory-craft: true
+    inventory-creative: true
+    inventory-drag: true
+    inventory-furnace: true
+    inventory-interact: true
+    inventory-open: true
+    inventory-pickup: true
+    player-achievement: true
+    player-animation: true
+    player-armor-stand: true
+    player-bed-enter: true
+    player-bed-leave: true
+    player-bucket-empty: true
+    player-bucket-fill: true
+    player-change-world: true
+    player-tab-complete: true
+    player-command: true
+    player-drop-item: true
+    player-edit-book: true
+    player-egg-throw: true
+    player-exp-change: true
+    player-fish: true
+    player-gm-change: true
+    player-interact: true
+    player-interact-entity: true
+    player-item-break: true
+    player-item-consume: true
+    player-item-damage: true
+    player-item-held: true
+    player-join: true
+    player-kick: true
+    player-level-change: true
+    player-login: true
+    player-move: true
+    player-quit: true
+    player-reg-channel: true
+    player-unreg-channel: true
+    player-respawn: true
+    player-shear: true
+    player-statistic: true
+    player-teleport: true
+    player-toggle-flight: true
+    player-toggle-sneak: true
+    player-toggle-sprint: true
+    player-unleash: true
+    player-velocity: true
+    vehicle-enter: true
+    vehicle-exit: true
+    vehicle-damage: true
+  on-afk:
+    no-item-pickup: true
+    invisible: true
+    no-vehicle-collision: true
+    use-custom-name: true
+    get-custom-name: 'AwayFromKeyboard'
+    ignore-by-sleeping: true

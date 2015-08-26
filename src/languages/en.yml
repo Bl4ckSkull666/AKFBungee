@@ -1,0 +1,31 @@
+no-permission: '&cYou have no permission to use this command.'
+config-reloaded: '&2AFKBungee configuration has been reloaded.'
+command-away: '&eI''m now away. It must be go fast.'
+auto-away: '&eI''m automatic set to away by the server.'
+afk-list:
+  header: '&6%name% &eis currently Away from keyboard.'
+  since: '&9- &eSince: %away%'
+  message: '&9- &eMessage: %message%'
+  air: '&f###########################'
+  empty: '&aNo one is currently Away in our Network.'
+current-afk:
+  header: '&eCurrently are %amount% players away from keyboard.'
+  footer: '&eFor a list of all Away Players do /afk list'
+you:
+  now-away: '&eYou are now mark as Away from Keyboard.'
+  no-more-away: '&eYou are no longer mark as Away from Keyboard.'
+other:
+  now-away: '&6%name% &eis now mark as Away from Keyboard.'
+  no-more-away: '&6%name% &eis no more longer mark as Away from Keyboard.'
+time:
+  day: 'Day'
+  days: 'Days'
+  hour: 'Hour'
+  hours: 'Hours'
+  minute: 'Minute'
+  minutes: 'Minutes'
+  second: 'Second'
+  seconds: 'Seconds'
+format:
+  date: 'MM/dd/yyyy'
+  time: 'hh:mm a'

@@ -1,0 +1,31 @@
+no-permission: '&cDu hast keine Rechte diesen Befehl auszufuehren.'
+config-reloaded: '&2AFKBungee Konfiguration wurde neugeladen.'
+command-away: '&eIch bin jetzt Abwesend. Es musste leider schnell gehen.'
+auto-away: '&eIch bin wohl Abwesend wie der Server bemerkt hat.'
+afk-list:
+  header: '&6%name% &eist derzeit Abwesend.'
+  since: '&9- &eSeit: %away%'
+  message: '&9- &eNachricht: %message%'
+  air: '&f###########################'
+  empty: '&aEs ist zurzeit keiner Abwesend im Netzwerk.'
+current-afk:
+  header: '&eDerzeit sind %amount% Spieler Abwesend.'
+  footer: '&eFuer eine Liste aller Abwesenden Spieler mach bitte /afk list'
+you:
+  now-away: '&eDu bist jetzt als Abwesend markiert.'
+  no-more-away: '&eDu bist wieder als Aktiv zurueck gemeldet.'
+other:
+  now-away: '&6%name% &eist jetzt Abwesend.'
+  no-more-away: '&6%name% &enimmt wieder Aktiv am Spielgeschehen teil.'
+time:
+  day: 'Tag'
+  days: 'Tage'
+  hour: 'Stunde'
+  hours: 'Stunden'
+  minute: 'Minute'
+  minutes: 'Minuten'
+  second: 'Sekunde'
+  seconds: 'Sekunden'
+format:
+  date: 'dd.MM.yyyy'
+  time: 'HH:mm'
