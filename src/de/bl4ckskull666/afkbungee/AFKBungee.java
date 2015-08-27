@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -86,8 +87,11 @@ public class AFKBungee extends Plugin {
         if(pp == null)
             return;
         
+        debugMe("Set Player Status and send it to Bukkit.");
+        
         ByteArrayDataOutput out = ByteStreams.newDataOutput();
         out.writeUTF("AFKBPlayer");
+        out.writeUTF(pp.getUniqueId().toString());
         out.writeBoolean(isNowAfk);
         pp.getServer().sendData("BungeeCord", out.toByteArray());
         
@@ -125,5 +129,10 @@ public class AFKBungee extends Plugin {
                 }
             }
         }
+    }
+    
+    public static void debugMe(String msg) {
+        if(_plugin.getConfig().getBoolean("debug", false))
+            _plugin.getLogger().log(Level.INFO, "[DEBUG] {0}", msg);
     }
 }

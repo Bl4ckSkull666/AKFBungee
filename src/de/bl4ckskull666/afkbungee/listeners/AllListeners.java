@@ -12,8 +12,11 @@ import de.bl4ckskull666.afkbungee.AFKBungee;
 import de.bl4ckskull666.afkbungee.Afkler;
 import de.bl4ckskull666.mu1ti1ingu41.Language;
 import java.net.InetSocketAddress;
+import java.util.UUID;
+import java.util.logging.Level;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.*;
 import net.md_5.bungee.api.plugin.Listener;
@@ -28,7 +31,7 @@ public class AllListeners implements Listener {
     @EventHandler(priority = EventPriority.LOWEST)
     public void onPostLoginEvent(PostLoginEvent e) {
         ProxiedPlayer pp = e.getPlayer();
-        AFKBungee.getLastActiv().put(pp.getUniqueId(), System.currentTimeMillis());
+        AFKBungee.setPlayerUUIDActive(pp.getUniqueId());
         if(!Afkler._awayler.isEmpty()) {
             pp.sendMessage(Language.getMessage(AFKBungee.getPlugin(), pp.getUniqueId(), "current-afk.header", ChatColor.YELLOW + "Currently are %amount% players away from keyboard.", new String[] {"%amount%"}, new String[] {String.valueOf(Afkler._awayler.size())}));
             pp.sendMessage(Language.getMessage(AFKBungee.getPlugin(), pp.getUniqueId(), "current-afk.footer", ChatColor.YELLOW + "For a list of all Away Players do /afk list"));
@@ -55,6 +58,7 @@ public class AllListeners implements Listener {
         return null;
     }
     
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onPluginMessage(PluginMessageEvent e) {
         if(!e.getTag().equalsIgnoreCase("BungeeCord"))
             return;
@@ -62,24 +66,39 @@ public class AllListeners implements Listener {
         ByteArrayDataInput in = ByteStreams.newDataInput(e.getData());
         String sub = in.readUTF();
         if(sub.equalsIgnoreCase("AFKBPlayer")) {
-            ProxiedPlayer pp = getPlayer(e.getReceiver().getAddress());
-            if(pp != null)
-                AFKBungee.setPlayerUUIDActive(pp.getUniqueId());
+            UUID uuid = UUID.fromString(in.readUTF());
+            AFKBungee.debugMe("Player activity " + uuid.toString());
+            AFKBungee.setPlayerUUIDActive(uuid);
         } else if(sub.equalsIgnoreCase("AFKBConfig")) {
+            AFKBungee.debugMe("Configuration requested. Send it now.");
             ProxiedPlayer pp = getPlayer(e.getReceiver().getAddress());
+            if(pp == null)
+                pp = getPlayer(e.getSender().getAddress());
             if(pp != null && AFKBungee.getPlugin().getConfig().isConfigurationSection("bukkit-configs")) {
-                for(String key: AFKBungee.getPlugin().getConfig().getConfigurationSection("bukkit-configs").getKeys(false)) {
-                    for(String k: AFKBungee.getPlugin().getConfig().getConfigurationSection("bukkit-configs." + key).getKeys(false)) {
-                        ByteArrayDataOutput out = ByteStreams.newDataOutput();
-                        out.writeUTF("AFKBConfig");
-                        out.writeUTF(key);
-                        out.writeUTF(k);
-                        out.writeUTF(AFKBungee.getPlugin().getConfig().getString("bukkit-configs." + key + "." + k));
-                        pp.getServer().sendData("BungeeCord", out.toByteArray());
-                    }
-                }
+                ProxyServer.getInstance().getScheduler().runAsync(AFKBungee.getPlugin(), new SendConfiguration(pp.getServer().getInfo()));
             }
         }
+    }
+    
+    public static class SendConfiguration implements Runnable {
+        private ServerInfo _si;
+        public SendConfiguration(ServerInfo si) {
+            _si = si;
+        }
         
+        @Override
+        public void run() {
+            for(String key: AFKBungee.getPlugin().getConfig().getConfigurationSection("bukkit-configs").getKeys(false)) {
+                for(String k: AFKBungee.getPlugin().getConfig().getConfigurationSection("bukkit-configs." + key).getKeys(false)) {
+                    ByteArrayDataOutput out = ByteStreams.newDataOutput();
+                    out.writeUTF("AFKBConfig");
+                    out.writeUTF(key);
+                    out.writeUTF(k);
+                    out.writeUTF(AFKBungee.getPlugin().getConfig().getString("bukkit-configs." + key + "." + k));
+                    _si.sendData("BungeeCord", out.toByteArray());
+                }
+            }
+            AFKBungee.getPlugin().getLogger().log(Level.INFO, "Configuration sended to {0}", _si.getName());
+        }
     }
 }
