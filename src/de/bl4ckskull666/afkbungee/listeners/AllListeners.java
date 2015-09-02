@@ -65,11 +65,15 @@ public class AllListeners implements Listener {
         
         ByteArrayDataInput in = ByteStreams.newDataInput(e.getData());
         String sub = in.readUTF();
-        if(sub.equalsIgnoreCase("AFKBPlayer")) {
+        if(!sub.equalsIgnoreCase("AFKB"))
+            return;
+        
+        String cat = in.readUTF();
+        if(cat.equalsIgnoreCase("Player")) {
             UUID uuid = UUID.fromString(in.readUTF());
             AFKBungee.debugMe("Player activity " + uuid.toString());
             AFKBungee.setPlayerUUIDActive(uuid);
-        } else if(sub.equalsIgnoreCase("AFKBConfig")) {
+        } else if(cat.equalsIgnoreCase("Config")) {
             AFKBungee.debugMe("Configuration requested. Send it now.");
             ProxiedPlayer pp = getPlayer(e.getReceiver().getAddress());
             if(pp == null)
@@ -91,14 +95,15 @@ public class AllListeners implements Listener {
             for(String key: AFKBungee.getPlugin().getConfig().getConfigurationSection("bukkit-configs").getKeys(false)) {
                 for(String k: AFKBungee.getPlugin().getConfig().getConfigurationSection("bukkit-configs." + key).getKeys(false)) {
                     ByteArrayDataOutput out = ByteStreams.newDataOutput();
-                    out.writeUTF("AFKBConfig");
+                    out.writeUTF("AFKB");
+                    out.writeUTF("Config");
                     out.writeUTF(key);
                     out.writeUTF(k);
                     out.writeUTF(AFKBungee.getPlugin().getConfig().getString("bukkit-configs." + key + "." + k));
                     _si.sendData("BungeeCord", out.toByteArray());
                 }
             }
-            AFKBungee.getPlugin().getLogger().log(Level.INFO, "Configuration sended to {0}", _si.getName());
+            AFKBungee.debugMe("Configuration sended to " + _si.getName());
         }
     }
 }

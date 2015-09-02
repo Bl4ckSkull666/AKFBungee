@@ -90,7 +90,8 @@ public class AFKBungee extends Plugin {
         debugMe("Set Player Status and send it to Bukkit.");
         
         ByteArrayDataOutput out = ByteStreams.newDataOutput();
-        out.writeUTF("AFKBPlayer");
+        out.writeUTF("AFKB");
+        out.writeUTF("Player");
         out.writeUTF(pp.getUniqueId().toString());
         out.writeBoolean(isNowAfk);
         pp.getServer().sendData("BungeeCord", out.toByteArray());
