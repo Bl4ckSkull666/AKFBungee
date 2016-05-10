@@ -13,7 +13,6 @@ import de.bl4ckskull666.afkbungee.Afkler;
 import de.bl4ckskull666.mu1ti1ingu41.Language;
 import java.net.InetSocketAddress;
 import java.util.UUID;
-import java.util.logging.Level;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.config.ServerInfo;
@@ -28,25 +27,26 @@ import net.md_5.bungee.event.EventPriority;
  * @author PapaHarni
  */
 public class AllListeners implements Listener {
-    @EventHandler(priority = EventPriority.LOWEST)
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onPostLoginEvent(PostLoginEvent e) {
         ProxiedPlayer pp = e.getPlayer();
         AFKBungee.setPlayerUUIDActive(pp.getUniqueId());
-        if(!Afkler._awayler.isEmpty()) {
-            pp.sendMessage(Language.getMessage(AFKBungee.getPlugin(), pp.getUniqueId(), "current-afk.header", ChatColor.YELLOW + "Currently are %amount% players away from keyboard.", new String[] {"%amount%"}, new String[] {String.valueOf(Afkler._awayler.size())}));
+        Afkler.checkAFK();
+        if(Afkler.getAFKSize() > 0) {
+            pp.sendMessage(Language.getMessage(AFKBungee.getPlugin(), pp.getUniqueId(), "current-afk.header", ChatColor.YELLOW + "Currently are %amount% players away from keyboard.", new String[] {"%amount%"}, new String[] {String.valueOf(Afkler.getAFKSize())}));
             pp.sendMessage(Language.getMessage(AFKBungee.getPlugin(), pp.getUniqueId(), "current-afk.footer", ChatColor.YELLOW + "For a list of all Away Players do /afk list"));
         }
     }
     
     @EventHandler(priority = EventPriority.LOWEST)
     public void onServerKickEvent(ServerKickEvent e) {
-        Afkler._awayler.remove(e.getPlayer().getUniqueId());
+        Afkler.removeAFK(e.getPlayer().getUniqueId());
         AFKBungee.getLastActiv().remove(e.getPlayer().getUniqueId());
     }
     
     @EventHandler(priority = EventPriority.LOWEST)
     public void onServerDisconnectEvent(ServerDisconnectEvent e) {
-        Afkler._awayler.remove(e.getPlayer().getUniqueId());
+        Afkler.removeAFK(e.getPlayer().getUniqueId());
         AFKBungee.getLastActiv().remove(e.getPlayer().getUniqueId());
     }
     
@@ -58,7 +58,7 @@ public class AllListeners implements Listener {
         return null;
     }
     
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onPluginMessage(PluginMessageEvent e) {
         if(!e.getTag().equalsIgnoreCase("BungeeCord"))
             return;
@@ -92,16 +92,14 @@ public class AllListeners implements Listener {
         
         @Override
         public void run() {
-            for(String key: AFKBungee.getPlugin().getConfig().getConfigurationSection("bukkit-configs").getKeys(false)) {
-                for(String k: AFKBungee.getPlugin().getConfig().getConfigurationSection("bukkit-configs." + key).getKeys(false)) {
-                    ByteArrayDataOutput out = ByteStreams.newDataOutput();
-                    out.writeUTF("AFKB");
-                    out.writeUTF("Config");
-                    out.writeUTF(key);
-                    out.writeUTF(k);
-                    out.writeUTF(AFKBungee.getPlugin().getConfig().getString("bukkit-configs." + key + "." + k));
-                    _si.sendData("BungeeCord", out.toByteArray());
-                }
+            for(String key: AFKBungee.getPlugin().getConfig().getConfigurationSection("bukkit-configs").getKeys(true)) {
+                ByteArrayDataOutput out = ByteStreams.newDataOutput();
+                out.writeUTF("AFKB");
+                out.writeUTF("Config");
+                out.writeUTF(key.replace("bukkit-configs.", ""));
+                out.writeUTF(AFKBungee.getPlugin().getConfig().get("bukkit-configs." + key).toString().replace(" ", "__--__"));
+                _si.sendData("BungeeCord", out.toByteArray());
+                AFKBungee.debugMe("Config send: " + out.toString());
             }
             AFKBungee.debugMe("Configuration sended to " + _si.getName());
         }

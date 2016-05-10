@@ -35,12 +35,13 @@ public class afk extends Command {
         ProxiedPlayer pp = (ProxiedPlayer)s;
         if(a.length > 0) {
             if(a[0].equalsIgnoreCase("list")) {
-                if(Afkler._awayler.isEmpty()) {
+                Afkler.checkAFK();
+                if(Afkler.getAFKSize() <= 0) {
                     pp.sendMessage(Language.getMessage(AFKBungee.getPlugin(), pp.getUniqueId(), "afk-list.empty", ChatColor.GREEN + "No one is currently Away in our Network."));
                     return;
                 }
                 
-                for(Map.Entry<UUID, Afkler> me: Afkler._awayler.entrySet()) {
+                for(Map.Entry<UUID, Afkler> me: Afkler.getAFK().entrySet()) {
                     ProxiedPlayer app = ProxyServer.getInstance().getPlayer(me.getKey());
                     if(app == null)
                         continue;
@@ -69,7 +70,11 @@ public class afk extends Command {
             }
         }
         
-        if(!Afkler._awayler.containsKey(pp.getUniqueId())) {
+        if(!Afkler.isAFK(pp.getUniqueId())) {
+            if(AFKBungee.checkIgnoreAFKServer(pp)) {
+                pp.sendMessage(Language.getMessage(AFKBungee.getPlugin(), pp.getUniqueId(), "afk-not-allow", ChatColor.RED + "You are on a server there is the away status not allowed."));
+                return;
+            }
             String msg = "%command-message%";
             if(a.length > 0) {
                 msg = "";

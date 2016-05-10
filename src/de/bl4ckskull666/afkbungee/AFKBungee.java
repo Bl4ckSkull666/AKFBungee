@@ -75,14 +75,21 @@ public class AFKBungee extends Plugin {
     }
     
     public static void setPlayerUUIDActive(UUID uuid) {
-        if(Afkler._awayler.containsKey(uuid)) {
-            Afkler._awayler.remove(uuid);
+        if(Afkler.isAFK(uuid)) {
+            Afkler.removeAFK(uuid);
             informPlayers(uuid, false);
         }
         _lastActiv.put(uuid, System.currentTimeMillis());
     }
     
     public static void informPlayers(UUID uuid, boolean isNowAfk) {
+        HashMap<UUID, Afkler> tmp = new HashMap<>();
+        tmp.putAll(Afkler.getAFK());
+        for(Map.Entry<UUID, Afkler> me: Afkler.getAFK().entrySet()) {
+            if(ProxyServer.getInstance().getPlayer(me.getKey()) == null)
+                Afkler.removeAFK(me.getKey());
+        }
+        
         ProxiedPlayer pp = ProxyServer.getInstance().getPlayer(uuid);
         if(pp == null)
             return;
@@ -95,6 +102,9 @@ public class AFKBungee extends Plugin {
         out.writeUTF(pp.getUniqueId().toString());
         out.writeBoolean(isNowAfk);
         pp.getServer().sendData("BungeeCord", out.toByteArray());
+        
+        if(pp.hasPermission("afkbungee.bypass-message"))
+            return;
         
         String name = pp.getDisplayName().isEmpty()?pp.getName():pp.getDisplayName();
         for(ProxiedPlayer ipp: ProxyServer.getInstance().getPlayers()) {
@@ -123,6 +133,13 @@ public class AFKBungee extends Plugin {
             HashMap<UUID, Long> temp = new HashMap<>();
             temp.putAll(_lastActiv);
             for(Map.Entry<UUID, Long> me: temp.entrySet()) {
+                ProxiedPlayer pp = ProxyServer.getInstance().getPlayer(me.getKey());
+                if(pp == null)
+                    return;
+                
+                if(checkIgnoreAFKServer(pp))
+                    continue;
+                
                 if(Math.round((System.currentTimeMillis()-me.getValue())/1000) >= _plugin.getConfig().getLong("auto-away", 180)) {
                     Afkler t = new Afkler(me.getKey(), "%auto-message%");
                     _lastActiv.remove(me.getKey());
@@ -130,6 +147,16 @@ public class AFKBungee extends Plugin {
                 }
             }
         }
+    }
+    
+    public static boolean checkIgnoreAFKServer(ProxiedPlayer pp) {
+        if(_plugin.getConfig().isList("ignore-away-on-servers")) {
+            for(String srv: _plugin.getConfig().getStringList("ignore-away-on-servers")) {
+                if(pp.getServer().getInfo().getName().equalsIgnoreCase(srv))
+                    return true;
+            }
+        }
+        return false;
     }
     
     public static void debugMe(String msg) {
