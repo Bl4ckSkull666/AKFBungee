@@ -33,8 +33,8 @@ public class AllListeners implements Listener {
         AFKBungee.setPlayerUUIDActive(pp.getUniqueId());
         Afkler.checkAFK();
         if(Afkler.getAFKSize() > 0) {
-            pp.sendMessage(Language.getMessage(AFKBungee.getPlugin(), pp.getUniqueId(), "current-afk.header", ChatColor.YELLOW + "Currently are %amount% players away from keyboard.", new String[] {"%amount%"}, new String[] {String.valueOf(Afkler.getAFKSize())}));
-            pp.sendMessage(Language.getMessage(AFKBungee.getPlugin(), pp.getUniqueId(), "current-afk.footer", ChatColor.YELLOW + "For a list of all Away Players do /afk list"));
+            Language.sendMessage(AFKBungee.getPlugin(), pp, "current-afk.header", ChatColor.YELLOW + "Currently are %amount% players away from keyboard.", new String[] {"%amount%"}, new String[] {String.valueOf(Afkler.getAFKSize())});
+            Language.sendMessage(AFKBungee.getPlugin(), pp, "current-afk.footer", ChatColor.YELLOW + "For a list of all Away Players do /afk list");
         }
     }
     

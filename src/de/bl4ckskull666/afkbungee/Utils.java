@@ -2,7 +2,6 @@ package de.bl4ckskull666.afkbungee;
 
 import de.bl4ckskull666.mu1ti1ingu41.Language;
 import java.util.UUID;
-import net.md_5.bungee.api.ChatColor;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -28,9 +27,9 @@ public final class Utils {
         
         if(day > 0) {
             if(day == 1)
-                strTime = day + " " + Language.getMsg(AFKBungee.getPlugin(), uuid, "time.day", "day");
+                strTime = day + " " + Language.getPlainText(AFKBungee.getPlugin(), uuid, "time.day", "day");
             else
-                strTime = day + " " + Language.getMsg(AFKBungee.getPlugin(), uuid, "time.days", "days");
+                strTime = day + " " + Language.getPlainText(AFKBungee.getPlugin(), uuid, "time.days", "days");
         }
         
         if((t/(60*60)) >= 1) {
@@ -40,9 +39,9 @@ public final class Utils {
         
         if(!strTime.isEmpty() || hour > 0) {
             if(hour == 1)
-                strTime += (strTime.isEmpty()?"":", ") + hour + " " + Language.getMsg(AFKBungee.getPlugin(), uuid, "time.hour", "hour");
+                strTime += (strTime.isEmpty()?"":", ") + hour + " " + Language.getPlainText(AFKBungee.getPlugin(), uuid, "time.hour", "hour");
             else
-                strTime += (strTime.isEmpty()?"":", ") + hour + " " + Language.getMsg(AFKBungee.getPlugin(), uuid, "time.hours", "hours");
+                strTime += (strTime.isEmpty()?"":", ") + hour + " " + Language.getPlainText(AFKBungee.getPlugin(), uuid, "time.hours", "hours");
         }
         
         if((t/60) >= 1) {
@@ -52,9 +51,9 @@ public final class Utils {
         
         if(!strTime.isEmpty() || minute > 0) {
             if(minute == 1)
-                strTime += (strTime.isEmpty()?"":", ") + minute + " " + Language.getMsg(AFKBungee.getPlugin(), uuid, "time.minute", "minute");
+                strTime += (strTime.isEmpty()?"":", ") + minute + " " + Language.getPlainText(AFKBungee.getPlugin(), uuid, "time.minute", "minute");
             else
-                strTime += (strTime.isEmpty()?"":", ") + minute + " " + Language.getMsg(AFKBungee.getPlugin(), uuid, "time.minutes", "minutes");
+                strTime += (strTime.isEmpty()?"":", ") + minute + " " + Language.getPlainText(AFKBungee.getPlugin(), uuid, "time.minutes", "minutes");
         }
         
         if(t >= 1) {
@@ -63,9 +62,9 @@ public final class Utils {
         
         if(!strTime.isEmpty() || second > 0) {
             if(second == 1)
-                strTime += (strTime.isEmpty()?"":", ") + second + " " + Language.getMsg(AFKBungee.getPlugin(), uuid, "time.second", "second");
+                strTime += (strTime.isEmpty()?"":", ") + second + " " + Language.getPlainText(AFKBungee.getPlugin(), uuid, "time.second", "second");
             else
-                strTime += (strTime.isEmpty()?"":", ") + second + " " + Language.getMsg(AFKBungee.getPlugin(), uuid, "time.seconds", "seconds");
+                strTime += (strTime.isEmpty()?"":", ") + second + " " + Language.getPlainText(AFKBungee.getPlugin(), uuid, "time.seconds", "seconds");
         }
         return strTime;
     }

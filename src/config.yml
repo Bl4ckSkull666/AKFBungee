@@ -60,3 +60,4 @@ bukkit-configs:
     use-custom-name: true
     get-custom-name: 'AwayFromKeyboard'
     ignore-by-sleeping: true
+    no-collidable: true

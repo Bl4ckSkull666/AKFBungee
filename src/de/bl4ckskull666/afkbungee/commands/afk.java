@@ -37,7 +37,7 @@ public class afk extends Command {
             if(a[0].equalsIgnoreCase("list")) {
                 Afkler.checkAFK();
                 if(Afkler.getAFKSize() <= 0) {
-                    pp.sendMessage(Language.getMessage(AFKBungee.getPlugin(), pp.getUniqueId(), "afk-list.empty", ChatColor.GREEN + "No one is currently Away in our Network."));
+                    Language.sendMessage(AFKBungee.getPlugin(), pp, "afk-list.empty", ChatColor.GREEN + "No one is currently Away in our Network.");
                     return;
                 }
                 
@@ -46,33 +46,33 @@ public class afk extends Command {
                     if(app == null)
                         continue;
                     String name = app.getDisplayName().isEmpty()?app.getName():app.getDisplayName();
-                    pp.sendMessage(Language.getMessage(AFKBungee.getPlugin(), pp.getUniqueId(), "afk-list.header", ChatColor.GOLD + "%name% " + ChatColor.YELLOW + " is away", new String[] {"%name%"}, new String[] {name}));
-                    pp.sendMessage(Language.getMessage(AFKBungee.getPlugin(), pp.getUniqueId(), "afk-list.since", ChatColor.BLUE + "- " + ChatColor.YELLOW + "since : " + ChatColor.RED + "%away%",
+                    Language.sendMessage(AFKBungee.getPlugin(), pp, "afk-list.header", ChatColor.GOLD + "%name% " + ChatColor.YELLOW + " is away", new String[] {"%name%"}, new String[] {name});
+                    Language.sendMessage(AFKBungee.getPlugin(), pp, "afk-list.since", ChatColor.BLUE + "- " + ChatColor.YELLOW + "since : " + ChatColor.RED + "%away%",
                             new String[] {"%date%", "%time%", "%away%"},
                             new String[] {
-                                    me.getValue().getDateFormat(Language.getMsg(AFKBungee.getPlugin(), pp.getUniqueId(), "format.date", "MM/dd/yyyy")),
-                                    me.getValue().getDateFormat(Language.getMsg(AFKBungee.getPlugin(), pp.getUniqueId(), "format.time", "hh:mm a")),
+                                    me.getValue().getDateFormat(Language.getPlainText(AFKBungee.getPlugin(), pp.getUniqueId(), "format.date", "MM/dd/yyyy")),
+                                    me.getValue().getDateFormat(Language.getPlainText(AFKBungee.getPlugin(), pp.getUniqueId(), "format.time", "hh:mm a")),
                                     Utils.getTimeString(me.getValue().getDifferenceSeconds(), pp.getUniqueId())
                             }
-                    ));
-                    pp.sendMessage(Language.getMessage(AFKBungee.getPlugin(), pp.getUniqueId(), "afk-list.message", ChatColor.BLUE + "- " + ChatColor.YELLOW + "message : " + ChatColor.RED + "%message%", new String[] {"%message%"}, new String[] {me.getValue().getMessage().replace("%auto-message%", Language.getMsg(AFKBungee.getPlugin(), pp.getUniqueId(), "auto-away", ChatColor.YELLOW + "I'm automatic set to away by the server.")).replace("%command-message%", Language.getMsg(AFKBungee.getPlugin(), pp.getUniqueId(), "command-away", ChatColor.YELLOW + "I'm now away. It must be go fast."))}));
-                    pp.sendMessage(Language.getMessage(AFKBungee.getPlugin(), pp.getUniqueId(), "afk-list.air", ChatColor.BLACK + "####################################"));
+                    );
+                    Language.sendMessage(AFKBungee.getPlugin(), pp, "afk-list.message", ChatColor.BLUE + "- " + ChatColor.YELLOW + "message : " + ChatColor.RED + "%message%", new String[] {"%message%"}, new String[] {me.getValue().getMessage().replace("%auto-message%", Language.getPlainText(AFKBungee.getPlugin(), pp.getUniqueId(), "auto-away", ChatColor.YELLOW + "I'm automatic set to away by the server.")).replace("%command-message%", Language.getPlainText(AFKBungee.getPlugin(), pp.getUniqueId(), "command-away", ChatColor.YELLOW + "I'm now away. It must be go fast."))});
+                    Language.sendMessage(AFKBungee.getPlugin(), pp, "afk-list.air", ChatColor.BLACK + "####################################");
                 }
                 return;
             } else if(a[0].equalsIgnoreCase("reload")) {
                 if(!pp.hasPermission("amcserver.team")) {
-                    pp.sendMessage(Language.getMessage(AFKBungee.getPlugin(), pp.getUniqueId(), "no-permission", ChatColor.RED + "You have no permission to use this command."));
+                    Language.sendMessage(AFKBungee.getPlugin(), pp, "no-permission", ChatColor.RED + "You have no permission to use this command.");
                     return;
                 }
                 AFKBungee.getPlugin().reloadConfig();
-                pp.sendMessage(Language.getMessage(AFKBungee.getPlugin(), pp.getUniqueId(), "config-reloaded", ChatColor.DARK_GREEN + "AFKBungee configuration has been reloaded."));
+                Language.sendMessage(AFKBungee.getPlugin(), pp, "config-reloaded", ChatColor.DARK_GREEN + "AFKBungee configuration has been reloaded.");
                 return;
             }
         }
         
         if(!Afkler.isAFK(pp.getUniqueId())) {
             if(AFKBungee.checkIgnoreAFKServer(pp)) {
-                pp.sendMessage(Language.getMessage(AFKBungee.getPlugin(), pp.getUniqueId(), "afk-not-allow", ChatColor.RED + "You are on a server there is the away status not allowed."));
+                Language.sendMessage(AFKBungee.getPlugin(), pp, "afk-not-allow", ChatColor.RED + "You are on a server there is the away status not allowed.");
                 return;
             }
             String msg = "%command-message%";

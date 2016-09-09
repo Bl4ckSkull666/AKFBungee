@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package de.bl4ckskull666.afkbungee;
 
 import com.google.common.io.ByteArrayDataOutput;
@@ -23,7 +18,7 @@ import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.api.scheduler.ScheduledTask;
-import yamlapi.file.FileConfiguration;
+import org.bukkit.configuration.file.FileConfiguration;
 
 /**
  *
@@ -83,6 +78,9 @@ public class AFKBungee extends Plugin {
     }
     
     public static void informPlayers(UUID uuid, boolean isNowAfk) {
+        if(Afkler.getAFK() == null || Afkler.getAFK().isEmpty())
+            return;
+        
         HashMap<UUID, Afkler> tmp = new HashMap<>();
         tmp.putAll(Afkler.getAFK());
         for(Map.Entry<UUID, Afkler> me: Afkler.getAFK().entrySet()) {
@@ -91,7 +89,7 @@ public class AFKBungee extends Plugin {
         }
         
         ProxiedPlayer pp = ProxyServer.getInstance().getPlayer(uuid);
-        if(pp == null)
+        if(pp == null || pp.getServer() == null)
             return;
         
         debugMe("Set Player Status and send it to Bukkit.");
@@ -110,14 +108,14 @@ public class AFKBungee extends Plugin {
         for(ProxiedPlayer ipp: ProxyServer.getInstance().getPlayers()) {
             if(ipp.getUniqueId() == pp.getUniqueId()) {
                 if(isNowAfk)
-                    ipp.sendMessage(Language.getMessage(_plugin, ipp.getUniqueId(), "you.now-away", ChatColor.YELLOW + "You are now mark as Away from Keyboard."));
+                    Language.sendMessage(_plugin, ipp, "you.now-away", ChatColor.YELLOW + "You are now mark as Away from Keyboard.");
                 else
-                    ipp.sendMessage(Language.getMessage(_plugin, ipp.getUniqueId(), "you.no-more-away", ChatColor.YELLOW + "You are no longer mark as Away from Keyboard"));
+                    Language.sendMessage(_plugin, ipp, "you.no-more-away", ChatColor.YELLOW + "You are no longer mark as Away from Keyboard");
             } else {
                 if(isNowAfk)
-                    ipp.sendMessage(Language.getMessage(_plugin, ipp.getUniqueId(), "other.now-away", ChatColor.GOLD + "%name%" + ChatColor.YELLOW + " is now mark as Away from Keyboard.", new String[] {"%name%"}, new String[] {name}));
+                    Language.sendMessage(_plugin, ipp, "other.now-away", ChatColor.GOLD + "%name%" + ChatColor.YELLOW + " is now mark as Away from Keyboard.", new String[] {"%name%"}, new String[] {name});
                 else
-                    ipp.sendMessage(Language.getMessage(_plugin, ipp.getUniqueId(), "other.no-more-away", ChatColor.GOLD + "%name%" + ChatColor.YELLOW + " is no more longer mark as Away from Keyboard", new String[] {"%name%"}, new String[] {name}));
+                    Language.sendMessage(_plugin, ipp, "other.no-more-away", ChatColor.GOLD + "%name%" + ChatColor.YELLOW + " is no more longer mark as Away from Keyboard", new String[] {"%name%"}, new String[] {name});
 
             }
         }
@@ -150,7 +148,7 @@ public class AFKBungee extends Plugin {
     }
     
     public static boolean checkIgnoreAFKServer(ProxiedPlayer pp) {
-        if(_plugin.getConfig().isList("ignore-away-on-servers")) {
+        if(_plugin.getConfig().isList("ignore-away-on-servers") && pp != null && pp.getServer() != null && pp.getServer().getInfo() != null && pp.getServer().getInfo().getName() != null) {
             for(String srv: _plugin.getConfig().getStringList("ignore-away-on-servers")) {
                 if(pp.getServer().getInfo().getName().equalsIgnoreCase(srv))
                     return true;
